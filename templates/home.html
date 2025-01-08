@@ -67,13 +67,14 @@
 </style>
 
 <script>
-document.getElementById('serverSelect').addEventListener('change', function() {
+// Function to check services for a selected server
+function checkServices() {
     const serverSelect = document.getElementById('serverSelect');
     const servicesTableContainer = document.getElementById('servicesTableContainer');
     const loadingIndicator = document.getElementById('loadingIndicator');
     const selectedServer = serverSelect.value;
 
-    // Hide table if no server selected
+    // Don't proceed if no server is selected
     if (!selectedServer) {
         servicesTableContainer.style.display = 'none';
         return;
@@ -99,7 +100,7 @@ document.getElementById('serverSelect').addEventListener('change', function() {
                     statusDotClass = service.running ? 'running' : 'not-running';
                     statusText = service.running ? 'Running' : 'Not Running';
                 }
-                
+
                 row.innerHTML = `
                     <td>${service.name}</td>
                     <td>
@@ -115,11 +116,29 @@ document.getElementById('serverSelect').addEventListener('change', function() {
             servicesTableContainer.style.display = 'block';
         })
         .catch(error => {
-            console.error('Error fetching services:', error);
+            console.error('Error:', error);
             loadingIndicator.style.display = 'none';
-            servicesTableContainer.style.display = 'none';
-            alert('Error checking service status. Please try again.');
         });
+}
+
+// Variable to store the interval ID
+let refreshInterval = null;
+
+// Event listener for server selection change
+document.getElementById('serverSelect').addEventListener('change', function() {
+    // Clear existing interval if any
+    if (refreshInterval) {
+        clearInterval(refreshInterval);
+    }
+    
+    // Initial check
+    checkServices();
+    
+    // Set up new interval if a server is selected
+    const selectedServer = this.value;
+    if (selectedServer) {
+        refreshInterval = setInterval(checkServices, 15000); // 15 seconds
+    }
 });
 </script>
 {% endblock %}

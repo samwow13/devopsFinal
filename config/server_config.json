@@ -31,7 +31,9 @@
                 {
                     "name": "Jboss74TrainMaster"
                 }
-            ]
+            ],
+            "start_jboss": "",
+            "stop_jboss": ""
         }
     }
 }

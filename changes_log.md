@@ -49,3 +49,8 @@
 - Added better error handling in PowerShell checker and app routes
 - Improved password handling during user sessions
 - Added flash messages for better user feedback
+- Added auto-refresh functionality for service status
+  - Implemented 15-second automatic refresh interval for service status checks
+  - Added proper cleanup of refresh intervals when changing servers
+  - Refactored service checking code into a reusable function
+  - Improved error handling with console error logging
