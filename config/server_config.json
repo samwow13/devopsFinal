@@ -1,0 +1,37 @@
+{
+    "servers": {
+        "prod92": {
+            "name": "Prod 92",
+            "services": [
+                {
+                    "name": "EAP Service"
+                },
+                {
+                    "name": "Windows Service"
+                }
+            ]
+        },
+        "prod94": {
+            "name": "Prod 94",
+            "services": [
+                {
+                    "name": "EAP Service"
+                },
+                {
+                    "name": "Windows Service"
+                }
+            ]
+        },
+        "wpdhsappl84": {
+            "name": "WPDHSappl84",
+            "services": [
+                {
+                    "name": "Jboss7.3TrainMaster"
+                },
+                {
+                    "name": "Jboss74TrainMaster"
+                }
+            ]
+        }
+    }
+}

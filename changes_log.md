@@ -1,0 +1,44 @@
+# Changes Log
+
+## 2025-01-08
+- Initial project setup
+- Created basic directory structure
+- Implemented login functionality
+- Added landing page with bootstrap styling
+- Fixed package version compatibility issues in requirements.txt
+- Fixed port binding issues by switching to port 3000
+- Restored full login functionality
+- Added navigation bar to base.html template
+  - Implemented responsive Bootstrap navbar
+  - Added welcome message showing logged-in user's ID
+  - Added logout button positioned in the top right
+  - Used Bootstrap classes for styling and responsiveness
+- Changed logout button color to red using Bootstrap's btn-danger class
+- Increased card width on landing page by adjusting column size from col-md-8 to col-md-10
+- Added server selection dropdown to home page
+- Created new ServerSelection class in models/server_selection.py
+- Updated home.html with Bootstrap-styled server dropdown
+- Modified app.py to include server options in home route
+- Created server configuration system:
+  - Added config/server_config.json to store server and service information
+  - Created ServerConfig class in models/server_config.py for managing server configurations
+  - Each server now has associated services with status and port information
+- Added dynamic service dropdown functionality
+  - Updated home.html to include service dropdown that updates based on server selection
+  - Added new /get_services/<server_id> endpoint to fetch services for selected server
+  - Modified home route to use ServerConfig for server data
+  - Added client-side JavaScript to handle dynamic updates of service dropdown
+- Replaced service dropdown with status table
+  - Added table to display service status with colored indicators
+  - Integrated PowerShell service status checking
+  - Added loading indicator for better UX
+  - Services now show real-time Running/Not Running status
+- Updated service status parsing
+  - Modified status parsing to handle PowerShell output format
+  - Added "Checking service status..." message during loading
+  - Improved status display with vertically aligned text
+  - Enhanced error handling for service status checks
+- Added N/A status handling
+  - Services now show N/A status with gray dot when status cannot be determined
+  - All configured services are shown in table, even if status check fails
+  - Improved error handling to maintain service visibility during errors

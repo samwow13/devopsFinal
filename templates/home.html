@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">EAP Manager</h3>
+            </div>
+            <div class="card-body">
+                <form id="serviceForm">
+                    <div class="form-group mb-3">
+                        <label for="serverSelect">Select Server:</label>
+                        <select class="form-control" id="serverSelect" name="server">
+                            <option value="">Select a Server</option>
+                            {% for server_id, server_info in servers.items() %}
+                            <option value="{{ server_id }}">{{ server_info.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+                <div id="servicesTableContainer" class="mt-4" style="display: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Service Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="servicesTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div id="loadingIndicator" class="text-center mt-4" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="mt-2">Checking service status...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+.status-dot.running {
+    background-color: #28a745;
+}
+.status-dot.not-running {
+    background-color: #dc3545;
+}
+.status-dot.na {
+    background-color: #6c757d;
+}
+.status-text {
+    vertical-align: middle;
+}
+</style>
+
+<script>
+document.getElementById('serverSelect').addEventListener('change', function() {
+    const serverSelect = document.getElementById('serverSelect');
+    const servicesTableContainer = document.getElementById('servicesTableContainer');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const selectedServer = serverSelect.value;
+
+    // Hide table if no server selected
+    if (!selectedServer) {
+        servicesTableContainer.style.display = 'none';
+        return;
+    }
+
+    // Show loading indicator
+    loadingIndicator.style.display = 'block';
+    servicesTableContainer.style.display = 'none';
+
+    // Fetch services for selected server
+    fetch(`/get_services/${selectedServer}`)
+        .then(response => response.json())
+        .then(services => {
+            const tableBody = document.getElementById('servicesTableBody');
+            tableBody.innerHTML = '';
+
+            services.forEach(service => {
+                const row = document.createElement('tr');
+                let statusDotClass = 'na';
+                let statusText = 'N/A';
+                
+                if (service.running !== null) {
+                    statusDotClass = service.running ? 'running' : 'not-running';
+                    statusText = service.running ? 'Running' : 'Not Running';
+                }
+                
+                row.innerHTML = `
+                    <td>${service.name}</td>
+                    <td>
+                        <span class="status-dot ${statusDotClass}"></span>
+                        <span class="status-text">${statusText}</span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Hide loading indicator and show table
+            loadingIndicator.style.display = 'none';
+            servicesTableContainer.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error fetching services:', error);
+            loadingIndicator.style.display = 'none';
+            servicesTableContainer.style.display = 'none';
+            alert('Error checking service status. Please try again.');
+        });
+});
+</script>
+{% endblock %}
