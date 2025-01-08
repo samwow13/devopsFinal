@@ -122,7 +122,6 @@ def login():
             user = User(username, password)
             _user_passwords[username] = password  # Store password for session
             login_user(user)
-            flash('Login successful!', 'success')
             return redirect(url_for('home'))
         else:
             flash('Invalid username or password', 'error')
@@ -138,7 +137,6 @@ def logout():
     if current_user.is_authenticated:
         _user_passwords.pop(current_user.username, None)  # Remove password on logout
     logout_user()
-    flash('Logged out successfully', 'success')
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
