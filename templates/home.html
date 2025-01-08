@@ -21,6 +21,10 @@
                         </select>
                     </div>
                 </form>
+                <div id="connectionError" class="alert alert-danger mt-3" style="display: none;">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span id="connectionErrorMessage"></span>
+                </div>
                 <div id="servicesTableContainer" class="mt-4" style="display: none;">
                     <table class="table">
                         <thead>
@@ -72,26 +76,41 @@ function checkServices() {
     const serverSelect = document.getElementById('serverSelect');
     const servicesTableContainer = document.getElementById('servicesTableContainer');
     const loadingIndicator = document.getElementById('loadingIndicator');
+    const connectionError = document.getElementById('connectionError');
+    const connectionErrorMessage = document.getElementById('connectionErrorMessage');
     const selectedServer = serverSelect.value;
 
     // Don't proceed if no server is selected
     if (!selectedServer) {
         servicesTableContainer.style.display = 'none';
+        connectionError.style.display = 'none';
         return;
     }
 
     // Show loading indicator
     loadingIndicator.style.display = 'block';
     servicesTableContainer.style.display = 'none';
+    connectionError.style.display = 'none';
 
     // Fetch services for selected server
     fetch(`/get_services/${selectedServer}`)
-        .then(response => response.json())
-        .then(services => {
+        .then(response => response.json().then(data => ({status: response.status, body: data})))
+        .then(({status, body}) => {
+            // Hide loading indicator
+            loadingIndicator.style.display = 'none';
+            
+            // Check if there's a connection error
+            if (status === 503 && body.error === 'connection_failed') {
+                connectionErrorMessage.textContent = body.message;
+                connectionError.style.display = 'block';
+                servicesTableContainer.style.display = 'none';
+                return;
+            }
+            
             const tableBody = document.getElementById('servicesTableBody');
             tableBody.innerHTML = '';
 
-            services.forEach(service => {
+            body.forEach(service => {
                 const row = document.createElement('tr');
                 let statusDotClass = 'na';
                 let statusText = 'N/A';
@@ -111,13 +130,14 @@ function checkServices() {
                 tableBody.appendChild(row);
             });
 
-            // Hide loading indicator and show table
-            loadingIndicator.style.display = 'none';
+            // Show table
             servicesTableContainer.style.display = 'block';
         })
         .catch(error => {
             console.error('Error:', error);
             loadingIndicator.style.display = 'none';
+            connectionErrorMessage.textContent = 'An unexpected error occurred while checking services.';
+            connectionError.style.display = 'block';
         });
 }
 

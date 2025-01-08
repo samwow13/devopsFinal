@@ -54,3 +54,8 @@
   - Added proper cleanup of refresh intervals when changing servers
   - Refactored service checking code into a reusable function
   - Improved error handling with console error logging
+- Added connection error handling for PowerShell remote server access
+  - Added detection of PowerShell connection errors in powershellStatusChecker.py
+  - Updated app.py to handle connection errors with proper HTTP status codes
+  - Added user-friendly error display in the frontend with Bootstrap styling
+  - Improved error message clarity for connection issues

@@ -76,22 +76,30 @@ def get_services(server_id):
         service_names = [service['name'] for service in services]
         
         # Check service status using PowerShell
-        status_output = check_services_powershell(username, password, server_id, service_names)
-        
-        # Create a dictionary of service statuses from PowerShell output
-        status_dict = {}
-        for line in status_output.splitlines():
-            if "Service '" in line and "' is" in line:
-                parts = line.split("'")
-                if len(parts) >= 2:
-                    service_name = parts[1]
-                    is_running = "is running" in line.lower()
-                    status_dict[service_name] = is_running
-        
-        # Update service statuses with PowerShell results
-        for service in service_statuses:
-            if service['name'] in status_dict:
-                service['running'] = status_dict[service['name']]
+        try:
+            status_output = check_services_powershell(username, password, server_id, service_names)
+            
+            # Create a dictionary of service statuses from PowerShell output
+            status_dict = {}
+            for line in status_output.splitlines():
+                if "Service '" in line and "' is" in line:
+                    parts = line.split("'")
+                    if len(parts) >= 2:
+                        service_name = parts[1]
+                        is_running = "is running" in line.lower()
+                        status_dict[service_name] = is_running
+            
+            # Update service statuses with PowerShell results
+            for service in service_statuses:
+                if service['name'] in status_dict:
+                    service['running'] = status_dict[service['name']]
+                    
+        except ConnectionError as ce:
+            # Handle connection error specifically
+            return jsonify({
+                "error": "connection_failed",
+                "message": str(ce)
+            }), 503  # Service Unavailable
     
     except Exception as e:
         print(f"Error checking service status: {str(e)}")

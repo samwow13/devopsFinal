@@ -12,6 +12,7 @@ def check_services_powershell(username, password, server, services):
         str: Output from PowerShell command
     Raises:
         ValueError: If username or password is None or empty
+        ConnectionError: If connection to remote server fails
     """
     # Validate inputs
     if not username or not password:
@@ -64,5 +65,10 @@ Remove-PSSession $session
         print("\n=== PowerShell Errors ===")
         print(result.stderr)
     print("===========================\n")
+    
+    # Check for connection errors in both stdout and stderr
+    output = result.stdout + result.stderr
+    if "New-PSSession : " in output and "Connecting to remote server" in output and "failed" in output:
+        raise ConnectionError("Failed to connect to remote server. Please ensure the server is accessible and TrustedHosts are configured properly.")
     
     return result.stdout
