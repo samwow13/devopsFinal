@@ -42,3 +42,6 @@
   - Services now show N/A status with gray dot when status cannot be determined
   - All configured services are shown in table, even if status check fails
   - Improved error handling to maintain service visibility during errors
+- Added console logging to `powershellStatusChecker.py` to display both PowerShell commands (with masked sensitive data) and responses
+- Updated User model to temporarily store password in memory for PowerShell authentication
+- Modified login flow to properly pass and store credentials

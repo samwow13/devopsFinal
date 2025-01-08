@@ -11,10 +11,9 @@ class AuthManager:
         Authenticate a user with username and password
         Args:
             username (str): The username to authenticate
-            password (str): The password (not checked in this implementation)
+            password (str): The password to authenticate
         Returns:
-            User: A User object if authentication successful, None otherwise
+            bool: True if authentication successful, False otherwise
         """
-        if username.strip():  # Check if username is not empty
-            return User(username)
-        return None
+        # For now, just check if username and password are not empty
+        return bool(username.strip() and password.strip())

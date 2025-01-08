@@ -22,6 +22,8 @@ def load_user(user_id):
     Returns:
         User: The User object for the given ID
     """
+    # Since we're storing the password in memory, we need to create a new user
+    # without password when loading from session
     return User(user_id)
 
 @app.route('/')
@@ -59,7 +61,7 @@ def get_services(server_id):
         # Get the current user's credentials
         username = current_user.username
         # In a real application, you would get this from a secure storage
-        password = "your-password-here"  # TODO: Replace with actual password retrieval
+        password = current_user.password  # TODO: Replace with actual password retrieval
         
         # Get service names from config
         service_names = [service['name'] for service in services]
@@ -97,12 +99,13 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         
-        user = AuthManager.authenticate_user(username, password)
-        if user:
+        if AuthManager.authenticate_user(username, password):
+            user = User(username, password)  # Create user with password
             login_user(user)
             return redirect(url_for('home'))
-        flash('Invalid username')
-        
+        else:
+            flash('Invalid username or password')
+    
     return render_template('login.html')
 
 @app.route('/logout')
