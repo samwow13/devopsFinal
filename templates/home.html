@@ -26,16 +26,37 @@
                     <span id="connectionErrorMessage"></span>
                 </div>
                 <div id="servicesTableContainer" class="mt-4" style="display: none;">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Service Name</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="servicesTableBody">
-                        </tbody>
-                    </table>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Service Name</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="servicesTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card" id="eapControlCard" style="display: none;">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">EAP Control</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <button id="startEapBtn" class="btn btn-success">
+                                            <i class="bi bi-play-fill"></i> Start EAP
+                                        </button>
+                                        <button id="stopEapBtn" class="btn btn-danger">
+                                            <i class="bi bi-stop-fill"></i> Stop EAP
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="loadingIndicator" class="text-center mt-4" style="display: none;">
                     <div class="spinner-border text-primary" role="status">
@@ -104,6 +125,7 @@ function checkServices() {
                 connectionErrorMessage.textContent = body.message;
                 connectionError.style.display = 'block';
                 servicesTableContainer.style.display = 'none';
+                document.getElementById('eapControlCard').style.display = 'none';
                 return;
             }
             
@@ -130,8 +152,9 @@ function checkServices() {
                 tableBody.appendChild(row);
             });
 
-            // Show table
+            // Show the services table and EAP control card
             servicesTableContainer.style.display = 'block';
+            document.getElementById('eapControlCard').style.display = 'block';
         })
         .catch(error => {
             console.error('Error:', error);
@@ -146,19 +169,25 @@ let refreshInterval = null;
 
 // Event listener for server selection change
 document.getElementById('serverSelect').addEventListener('change', function() {
-    // Clear existing interval if any
+    const selectedServer = this.value;
+    
+    // Clear previous interval if it exists
     if (refreshInterval) {
         clearInterval(refreshInterval);
+        refreshInterval = null;
     }
-    
-    // Initial check
+
+    // Hide the services table and EAP control card when no server is selected
+    if (!selectedServer) {
+        document.getElementById('servicesTableContainer').style.display = 'none';
+        document.getElementById('eapControlCard').style.display = 'none';
+        document.getElementById('connectionError').style.display = 'none';
+        return;
+    }
+
+    // Check services immediately and start periodic refresh
     checkServices();
-    
-    // Set up new interval if a server is selected
-    const selectedServer = this.value;
-    if (selectedServer) {
-        refreshInterval = setInterval(checkServices, 15000); // 15 seconds
-    }
+    refreshInterval = setInterval(checkServices, 5000);
 });
 </script>
 {% endblock %}

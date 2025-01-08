@@ -59,3 +59,7 @@
   - Updated app.py to handle connection errors with proper HTTP status codes
   - Added user-friendly error display in the frontend with Bootstrap styling
   - Improved error message clarity for connection issues
+- Added new EAP Control card that appears after successful connection
+- Added Bootstrap Icons for better button styling
+- Restructured services table layout to accommodate the new EAP control card
+- Added Start and Stop EAP buttons with appropriate styling
