@@ -4,6 +4,7 @@ from models.user import User
 from models.server_selection import ServerSelection
 from auth.auth_manager import AuthManager
 from models.server_config import ServerConfig  # Import ServerConfig
+from powershellStatusChecker import check_services_powershell  # Import the PowerShell checker function
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # Change this in production
@@ -12,6 +13,9 @@ app.secret_key = 'your-secret-key'  # Change this in production
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+# Store user passwords temporarily during session
+_user_passwords = {}
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -22,8 +26,8 @@ def load_user(user_id):
     Returns:
         User: The User object for the given ID
     """
-    # Since we're storing the password in memory, we need to create a new user
-    # without password when loading from session
+    # We need to create a new user without password when loading from session
+    # The password will be set by the login route
     return User(user_id)
 
 @app.route('/')
@@ -59,9 +63,14 @@ def get_services(server_id):
     
     try:
         # Get the current user's credentials
+        if not current_user.is_authenticated:
+            raise ValueError("User not authenticated")
+            
         username = current_user.username
-        # In a real application, you would get this from a secure storage
-        password = current_user.password  # TODO: Replace with actual password retrieval
+        password = _user_passwords.get(username)
+        
+        if not username or not password:
+            raise ValueError("Missing credentials")
         
         # Get service names from config
         service_names = [service['name'] for service in services]
@@ -86,6 +95,7 @@ def get_services(server_id):
     
     except Exception as e:
         print(f"Error checking service status: {str(e)}")
+        flash(f'Error checking services: {str(e)}', 'error')
         # Keep N/A status for all services on error
     
     return jsonify(service_statuses)
@@ -100,11 +110,14 @@ def login():
         password = request.form.get('password')
         
         if AuthManager.authenticate_user(username, password):
-            user = User(username, password)  # Create user with password
+            # Store user in session with password
+            user = User(username, password)
+            _user_passwords[username] = password  # Store password for session
             login_user(user)
+            flash('Login successful!', 'success')
             return redirect(url_for('home'))
         else:
-            flash('Invalid username or password')
+            flash('Invalid username or password', 'error')
     
     return render_template('login.html')
 
@@ -114,7 +127,10 @@ def logout():
     """
     Logout route
     """
+    if current_user.is_authenticated:
+        _user_passwords.pop(current_user.username, None)  # Remove password on logout
     logout_user()
+    flash('Logged out successfully', 'success')
     return redirect(url_for('login'))
 
 if __name__ == '__main__':

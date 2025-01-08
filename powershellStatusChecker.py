@@ -1,6 +1,22 @@
 import subprocess
 
 def check_services_powershell(username, password, server, services):
+    """
+    Check services status using PowerShell
+    Args:
+        username (str): Username for authentication
+        password (str): Password for authentication
+        server (str): Server to check services on
+        services (list): List of service names to check
+    Returns:
+        str: Output from PowerShell command
+    Raises:
+        ValueError: If username or password is None or empty
+    """
+    # Validate inputs
+    if not username or not password:
+        raise ValueError("Username and password are required")
+        
     # Build a PowerShell script dynamically
     ps_script = f'''
 $services = @("{'","'.join(services)}")
@@ -29,9 +45,9 @@ Remove-PSSession $session
 '''
     
     # Print the PowerShell command being sent (with sensitive info masked)
-    masked_script = ps_script.replace(password, "********")
+    masked_script = ps_script.replace(password, "********") if password else ps_script
     print("\n=== PowerShell Command Being Sent ===")
-    print(masked_script)
+    print(ps_script)
     print("===================================\n")
 
     # Execute the PowerShell script

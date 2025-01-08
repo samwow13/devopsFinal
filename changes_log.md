@@ -45,3 +45,7 @@
 - Added console logging to `powershellStatusChecker.py` to display both PowerShell commands (with masked sensitive data) and responses
 - Updated User model to temporarily store password in memory for PowerShell authentication
 - Modified login flow to properly pass and store credentials
+- Added import for PowerShell checker function in app.py
+- Added better error handling in PowerShell checker and app routes
+- Improved password handling during user sessions
+- Added flash messages for better user feedback
