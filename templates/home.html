@@ -12,9 +12,9 @@
             <div class="card-body">
                 <form id="serviceForm">
                     <div class="form-group mb-3">
-                        <label for="serverSelect">Select Server:</label>
+                        <label for="serverSelect"><strong>Select a Server:</strong></label>
                         <select class="form-control" id="serverSelect" name="server">
-                            <option value="">Select a Server</option>
+                            <option value="">Unselected</option>
                             {% for server_id, server_info in servers.items() %}
                             <option value="{{ server_id }}">{{ server_info.name }}</option>
                             {% endfor %}
