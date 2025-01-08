@@ -108,10 +108,8 @@ function checkServices() {
         return;
     }
 
-    // Show loading indicator
+    // Keep existing view visible during loading
     loadingIndicator.style.display = 'block';
-    servicesTableContainer.style.display = 'none';
-    connectionError.style.display = 'none';
 
     // Fetch services for selected server
     fetch(`/get_services/${selectedServer}`)
@@ -187,7 +185,7 @@ document.getElementById('serverSelect').addEventListener('change', function() {
 
     // Check services immediately and start periodic refresh
     checkServices();
-    refreshInterval = setInterval(checkServices, 5000);
+    refreshInterval = setInterval(checkServices, 15000); // Changed back to 15 seconds
 });
 </script>
 {% endblock %}

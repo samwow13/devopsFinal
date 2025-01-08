@@ -63,3 +63,5 @@
 - Added Bootstrap Icons for better button styling
 - Restructured services table layout to accommodate the new EAP control card
 - Added Start and Stop EAP buttons with appropriate styling
+- Restored refresh interval to 15 seconds for optimal performance
+- Improved loading behavior to maintain current view until new data is ready
