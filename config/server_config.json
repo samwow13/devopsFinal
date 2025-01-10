@@ -9,7 +9,9 @@
                 {
                     "name": "Windows Service"
                 }
-            ]
+            ],
+            "start_jboss": "",
+            "stop_jboss": ""
         },
         "prod94": {
             "name": "Prod 94",
@@ -20,7 +22,9 @@
                 {
                     "name": "Windows Service"
                 }
-            ]
+            ],
+            "start_jboss": "",
+            "stop_jboss": ""
         },
         "wpdhsappl84": {
             "name": "WPDHSappl84",
