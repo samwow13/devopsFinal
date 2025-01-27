@@ -5,11 +5,9 @@
             "services": [
                 {
                     "name": "EAP ServiceFILLER"
-                },
-                {
-                    "name": "Windows ServiceFILLER"
                 }
             ],
+            "check_jboss_is_running": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; .\\jboss-cli.ps1 --connect --controller=prod92:9990 /host=prod92/server-config=SVR-PROD-92:read-attribute(name=status)",
             "start_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Starting Prod 92...'; .\\jboss-cli.ps1 --connect --controller=prod92:9990 /host=prod92/server-config=SVR-PROD-92:start",
             "stop_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Stopping Prod 92...';  .\\jboss-cli.ps1 --connect --controller=prod92:9990 /host=prod92/server-config=SVR-PROD-92:stop"
         },
@@ -18,11 +16,9 @@
             "services": [
                 {
                     "name": "EAP ServiceFILLER"
-                },
-                {
-                    "name": "Windows ServiceFILLER"
                 }
             ],
+            "check_jboss_is_running": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; .\\jboss-cli.ps1 --connect --controller=prod94:9990 /host=prod94/server-config=SVR-PROD-94:read-attribute(name=status)",
             "start_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Starting Prod 92...'; .\\jboss-cli.ps1 --connect --controller=prod92:9990 /host=prod92/server-config=SVR-PROD-92:start",
             "stop_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Stopping Prod 92...';  .\\jboss-cli.ps1 --connect --controller=prod92:9990 /host=prod92/server-config=SVR-PROD-92:stop"
         },
@@ -30,12 +26,10 @@
             "name": "WPDHSappl84",
             "services": [
                 {
-                    "name": "Jboss7.3TrainMaster"
-                },
-                {
                     "name": "Jboss74TrainMaster"
                 }
             ],
+            "check_jboss_is_running": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; .\\jboss-cli.ps1 --connect --controller=wpdhsappl84:9990 /host=wpdhsappl84-UAT/server-config=SVR-TRAIN-QA-INT:read-attribute(name=status)",
             "start_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Starting JBoss...'; .\\jboss-cli.ps1 --connect --controller=wpdhsappl84:9990 /host=wpdhsappl84-UAT/server-config=SVR-TRAIN-QA-INT:start",
             "stop_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Stopping JBoss...';  .\\jboss-cli.ps1 --connect --controller=wpdhsappl84:9990 /host=wpdhsappl84-UAT/server-config=SVR-TRAIN-QA-INT:stop"
         }

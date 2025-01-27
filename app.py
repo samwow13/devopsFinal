@@ -7,6 +7,9 @@ from models.server_config import ServerConfig  # Import ServerConfig
 from powershellStatusChecker import check_services_powershell  # Import the PowerShell checker function
 from manage_jboss import manage_jboss  # Import manage_jboss function
 
+# Dictionary to store user passwords temporarily in memory
+_user_passwords = {}
+
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # Change this in production
 
@@ -14,9 +17,6 @@ app.secret_key = 'your-secret-key'  # Change this in production
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-
-# Store user passwords temporarily during session
-_user_passwords = {}
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -69,16 +69,22 @@ def get_services(server_id):
             
         username = current_user.username
         password = _user_passwords.get(username)
+        print(f"Username: {username}")
+        print(f"Password: {password}")
+
+        # Get service names from config
+        service_names = [service['name'] for service in services]
+        print(f"Service Names: {service_names}")
+        jboss_cli_command = server_config.config['servers'][server_id]['check_jboss_is_running']
+        print(f"JBoss CLI Command: {jboss_cli_command}")
+
         
         if not username or not password:
             raise ValueError("Missing credentials")
         
-        # Get service names from config
-        service_names = [service['name'] for service in services]
-        
         # Check service status using PowerShell
         try:
-            status_output = check_services_powershell(username, password, server_id, service_names)
+            status_output = check_services_powershell(username, password, server_id, service_names, jboss_cli_command)
             
             # Create a dictionary of service statuses from PowerShell output
             status_dict = {}
@@ -104,7 +110,6 @@ def get_services(server_id):
     
     except Exception as e:
         print(f"Error checking service status: {str(e)}")
-        flash(f'Error checking services: {str(e)}', 'error')
         # Keep N/A status for all services on error
     
     return jsonify(service_statuses)

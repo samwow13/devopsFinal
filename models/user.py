@@ -30,6 +30,6 @@ class User(UserMixin):
         """
         Get the temporarily stored password
         Returns:
-            str: The user's password
+            str: The stored password or None if not set
         """
         return self._password
