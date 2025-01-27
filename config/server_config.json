@@ -4,27 +4,27 @@
             "name": "Prod 92",
             "services": [
                 {
-                    "name": "EAP Service"
+                    "name": "EAP ServiceFILLER"
                 },
                 {
-                    "name": "Windows Service"
+                    "name": "Windows ServiceFILLER"
                 }
             ],
-            "start_jboss": "",
-            "stop_jboss": ""
+            "start_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Starting Prod 92...'; .\\jboss-cli.ps1 --connect --controller=prod92:9990 /host=prod92/server-config=SVR-PROD-92:start",
+            "stop_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Stopping Prod 92...';  .\\jboss-cli.ps1 --connect --controller=prod92:9990 /host=prod92/server-config=SVR-PROD-92:stop"
         },
         "prod94": {
             "name": "Prod 94",
             "services": [
                 {
-                    "name": "EAP Service"
+                    "name": "EAP ServiceFILLER"
                 },
                 {
-                    "name": "Windows Service"
+                    "name": "Windows ServiceFILLER"
                 }
             ],
-            "start_jboss": "",
-            "stop_jboss": ""
+            "start_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Starting Prod 92...'; .\\jboss-cli.ps1 --connect --controller=prod92:9990 /host=prod92/server-config=SVR-PROD-92:start",
+            "stop_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Stopping Prod 92...';  .\\jboss-cli.ps1 --connect --controller=prod92:9990 /host=prod92/server-config=SVR-PROD-92:stop"
         },
         "wpdhsappl84": {
             "name": "WPDHSappl84",
@@ -36,8 +36,8 @@
                     "name": "Jboss74TrainMaster"
                 }
             ],
-            "start_jboss": "",
-            "stop_jboss": ""
+            "start_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Starting JBoss...'; .\\jboss-cli.ps1 --connect --controller=wpdhsappl84:9990 /host=wpdhsappl84-UAT/server-config=SVR-TRAIN-QA-INT:start",
+            "stop_jboss": "cd 'D:\\EAP\\jboss-eap-7.4\\bin'; Write-Host 'Stopping JBoss...';  .\\jboss-cli.ps1 --connect --controller=wpdhsappl84:9990 /host=wpdhsappl84-UAT/server-config=SVR-TRAIN-QA-INT:stop"
         }
     }
 }
