@@ -187,5 +187,60 @@ document.getElementById('serverSelect').addEventListener('change', function() {
     checkServices();
     refreshInterval = setInterval(checkServices, 15000); // Changed back to 15 seconds
 });
+
+// Function to handle EAP control buttons
+function handleEapControl(action) {
+    const serverSelect = document.getElementById('serverSelect');
+    const server = serverSelect.value;
+    
+    if (!server) {
+        showError('Please select a server first');
+        return;
+    }
+    
+    // Show loading state
+    const btn = document.getElementById(action + 'EapBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${action === 'start' ? 'Starting' : 'Stopping'}...`;
+    
+    // Make API call to manage EAP
+    fetch(`/manage_eap/${server}/${action}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            showError(data.message);
+        } else {
+            // Show success message
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success mt-3';
+            alert.innerHTML = `<i class="bi bi-check-circle-fill me-2"></i>${data.message}`;
+            document.getElementById('eapControlCard').appendChild(alert);
+            
+            // Remove alert after 5 seconds
+            setTimeout(() => alert.remove(), 5000);
+            
+            // Refresh services status after a short delay
+            setTimeout(checkServices, 2000);
+        }
+    })
+    .catch(error => {
+        showError('Failed to communicate with the server');
+    })
+    .finally(() => {
+        // Reset button state
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    });
+}
+
+// Add event listeners for EAP control buttons
+document.getElementById('startEapBtn').addEventListener('click', () => handleEapControl('start'));
+document.getElementById('stopEapBtn').addEventListener('click', () => handleEapControl('stop'));
 </script>
 {% endblock %}

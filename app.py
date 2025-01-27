@@ -5,6 +5,7 @@ from models.server_selection import ServerSelection
 from auth.auth_manager import AuthManager
 from models.server_config import ServerConfig  # Import ServerConfig
 from powershellStatusChecker import check_services_powershell  # Import the PowerShell checker function
+from manage_jboss import manage_jboss  # Import manage_jboss function
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # Change this in production
@@ -107,6 +108,49 @@ def get_services(server_id):
         # Keep N/A status for all services on error
     
     return jsonify(service_statuses)
+
+@app.route('/manage_eap/<server_id>/<action>', methods=['POST'])
+@login_required
+def manage_eap_service(server_id, action):
+    """
+    Manage EAP service (start/stop) for a specific server
+    
+    Args:
+        server_id (str): ID of the server to manage EAP on
+        action (str): Action to perform ('start' or 'stop')
+        
+    Returns:
+        JSON: Result of the operation
+    """
+    if action not in ['start', 'stop']:
+        return jsonify({
+            "error": "invalid_action",
+            "message": "Action must be either 'start' or 'stop'"
+        }), 400
+        
+    try:
+        if not current_user.is_authenticated:
+            raise ValueError("User not authenticated")
+            
+        username = current_user.username
+        password = _user_passwords.get(username)
+        
+        if not username or not password:
+            raise ValueError("Missing credentials")
+            
+        # Call manage_jboss function with the credentials
+        manage_jboss(server_id, action, username, password, "config/server_config.json")
+        
+        return jsonify({
+            "success": True,
+            "message": f"EAP {action} operation initiated successfully"
+        })
+        
+    except Exception as e:
+        return jsonify({
+            "error": "operation_failed",
+            "message": str(e)
+        }), 500
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

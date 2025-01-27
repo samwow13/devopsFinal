@@ -65,3 +65,8 @@
 - Added Start and Stop EAP buttons with appropriate styling
 - Restored refresh interval to 15 seconds for optimal performance
 - Improved loading behavior to maintain current view until new data is ready
+  - Improved table formatting using tabulate library
+  - Added grid lines between columns for better readability
+  - Simplified column headers and removed redundant "Current" column
+  - Enhanced value formatting with consistent currency display
+
